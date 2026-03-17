@@ -1,7 +1,12 @@
 #include <SPI.h>
 #include <MFRC522.h>
 
-// Definição dos pinos não é para mexer por favorrr
+/*
+ESSE CÓDIGO É PARA TESTAR SE O LEITOR DE CARTÕES NFC 
+FUNCIONA NÃO MEXEM, AQUI DESCOBRIMOS O ID DE CADA 
+CARTÃO PARA DEPOIS USAR NO PROJETO PRINCIPAL
+*/ 
+
 #define SS_PIN  5   // Pino NSS/SDA 
 #define RST_PIN 4   // Pino RST 
 
