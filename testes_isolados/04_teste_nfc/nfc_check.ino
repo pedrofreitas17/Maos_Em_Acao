@@ -5,7 +5,15 @@
 ESSE CÓDIGO É PARA TESTAR SE O LEITOR DE CARTÕES NFC 
 FUNCIONA NÃO MEXEM, AQUI DESCOBRIMOS O ID DE CADA 
 CARTÃO PARA DEPOIS USAR NO PROJETO PRINCIPAL
-*/ 
+
+==================================================
+
+Se forem usar os cartões da escola o ID deles é:
+Cartão 1: 7A 42 4C BF
+Cartão 2: B3 D8 05 15
+Tag 3: DA 88 C6 3B
+Tag 4: OA DF 67 59
+*/  
 
 #define SS_PIN  5   // Pino NSS/SDA 
 #define RST_PIN 4   // Pino RST 
