@@ -2,24 +2,26 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 #include <FluxGarage_RoboEyes.h>
-#include <SoftwareSerial.h>
 #include <DFRobotDFPlayerMini.h>
 #include <SPI.h>
 #include <MFRC522.h>
 
 // --- PINOS E CONFIGURAÇÕES ---
-#define SS_PIN 5   // SDA do RFID
-#define RST_PIN 4  // RST do RFID
+#define SS_PIN 5   
+#define RST_PIN 4  
 #define OLED_RESET -1
 
-// Objetos
+// Pinos para o Som (Hardware Serial 2 do ESP32)
+#define RXD2 16
+#define TXD2 17
+
+// --- OBJETOS ---
 Adafruit_SSD1306 display(128, 64, &Wire, OLED_RESET);
 RoboEyes eyes(display);
-SoftwareSerial somSerial(16, 17); // RX, TX para o DFPlayer
 DFRobotDFPlayerMini leitorMP3;
 MFRC522 rfid(SS_PIN, RST_PIN);
 
-// --- 1. FUNÇÕES DOS OLHOS ---
+// 1. FUNÇÕES DOS OLHOS
 void setupOlhos() {
   if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) { 
     Serial.println(F("Erro: OLED não encontrado!"));
@@ -39,42 +41,45 @@ void mudarExpressao(int estado) {
   }
 }
 
-// --- 2. FUNÇÕES DE SOM ---
+// 2. FUNÇÕES DE SOM (Atualizado para Serial2)
 void setupSom() {
-  somSerial.begin(9600);
-  if (!leitorMP3.begin(somSerial)) {
-    Serial.println(F("Erro: DFPlayer não encontrado."));
+  // Inicializa a porta serial 2 do ESP32 a 9600 baud
+  Serial2.begin(9600, SERIAL_8N1, RXD2, TXD2); 
+  
+  if (!leitorMP3.begin(Serial2)) {
+    Serial.println(F("Erro: DFPlayer não encontrado. Verifique fios e 5V!"));
   } else {
-    leitorMP3.volume(20); 
+    leitorMP3.volume(25); // Volume (0 a 30)
     Serial.println(F("Som Online"));
   }
 }
 
 void tocarPasso(int numero) {
-  leitorMP3.playFolder(1, numero); // Pasta 01, Ficheiro 00x.mp3
+  // Toca o ficheiro 00x.mp3 dentro da pasta "01"
+  leitorMP3.playFolder(1, numero); 
 }
 
-// --- 3. CONFIGURAÇÃO INICIAL (SETUP) ---
+// 3. CONFIGURAÇÃO INICIAL (SETUP)
 void setup() {
   Serial.begin(115200);
-  SPI.begin();      // Inicia barramento SPI para RFID
-  rfid.PCD_Init();  // Inicia o leitor RFID
+  SPI.begin();      
+  rfid.PCD_Init();  
   
-  setupOlhos();     // Inicia o ecrã
-  setupSom();       // Inicia o som
+  setupOlhos();     
+  setupSom();       
   
   Serial.println(F("--- PROJETO 1: SISTEMA PRONTO ---"));
 }
 
-// --- 4. CICLO PRINCIPAL (MAIN) ---
+// 4. CICLO PRINCIPAL (MAIN)
 void loop() {
-  eyes.update(); // Mantém os olhos ativos (ANIMAÇÃO)
+  eyes.update(); 
 
   // Verifica se há um cartão novo
   if (!rfid.PICC_IsNewCardPresent()) return;
   if (!rfid.PICC_ReadCardSerial()) return;
 
-  // Lógica do teu Scanner para ler o ID
+  // Lê o ID do cartão
   String uidString = "";
   for (byte i = 0; i < rfid.uid.size; i++) {
     uidString.concat(String(rfid.uid.uidByte[i] < 0x10 ? " 0" : " "));
@@ -83,34 +88,32 @@ void loop() {
   uidString.toUpperCase();
   uidString.trim();
 
-  Serial.print("Lido: ");
+  Serial.print("ID Lido: ");
   Serial.println(uidString);
 
-  // --- COMPARAÇÃO COM OS IDS DO TEU CADERNO ---
-  
-  if (uidString == "ID_DO_PASSO_1") { // Substitui pelo ID do caderno
+ 
+  if (uidString == "7A 42 4C BF") { 
     mudarExpressao(1); 
     tocarPasso(1);
   } 
-  else if (uidString == "ID_DO_PASSO_2") { // Substitui
+  else if (uidString == "B3 D8 05 15") { 
     mudarExpressao(1);
     tocarPasso(2);
   }
-  else if (uidString == "ID_DO_PASSO_3") { // Substitui
+  else if (uidString == "DA 88 C6 3B") { 
     mudarExpressao(1);
     tocarPasso(3);
   }
-  else if (uidString == "ID_DO_PASSO_4") { // Substitui
+  else if (uidString == "OA DF 67 59") { 
     mudarExpressao(1);
     tocarPasso(4);
   }
   else {
-    // Se o cartão for desconhecido
+    // Cartão desconhecido
     mudarExpressao(3); 
-    tocarPasso(5); // Som de erro
+    tocarPasso(5); // Som de alerta/erro
   }
 
-  // Finaliza leitura atual
   rfid.PICC_HaltA();
   rfid.PCD_StopCrypto1();
 }
