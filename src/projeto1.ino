@@ -92,19 +92,19 @@ void loop() {
   Serial.println(uidString);
 
  
-  if (uidString == "7A 42 4C BF") { 
+  if (uidString == "8C C8 D7 D4") { 
     mudarExpressao(1); 
     tocarPasso(1);
   } 
-  else if (uidString == "B3 D8 05 15") { 
+  else if (uidString == "AC C2 D7 D4") { 
     mudarExpressao(1);
     tocarPasso(2);
   }
-  else if (uidString == "DA 88 C6 3B") { 
+  else if (uidString == "1C B2 D6 D4") { 
     mudarExpressao(1);
     tocarPasso(3);
   }
-  else if (uidString == "OA DF 67 59") { 
+  else if (uidString == "FC E9 D7 D4") { 
     mudarExpressao(1);
     tocarPasso(4);
   }
