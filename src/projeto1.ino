@@ -41,21 +41,21 @@ void mudarExpressao(int estado) {
   }
 }
 
-// 2. FUNÇÕES DE SOM (Atualizado para Serial2)
+// 2. FUNÇÕES DE SOM 
 void setupSom() {
-  // Inicializa a porta serial 2 do ESP32 a 9600 baud
+  
   Serial2.begin(9600, SERIAL_8N1, RXD2, TXD2); 
   
   if (!leitorMP3.begin(Serial2)) {
     Serial.println(F("Erro: DFPlayer não encontrado. Verifique fios e 5V!"));
   } else {
-    leitorMP3.volume(25); // Volume (0 a 30)
+    leitorMP3.volume(25); 
     Serial.println(F("Som Online"));
   }
 }
 
 void tocarPasso(int numero) {
-  // Toca o ficheiro 00x.mp3 dentro da pasta "01"
+ 
   leitorMP3.playFolder(1, numero); 
 }
 
