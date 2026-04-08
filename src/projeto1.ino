@@ -47,7 +47,7 @@ void setupSom() {
   Serial2.begin(9600, SERIAL_8N1, RXD2, TXD2); 
   
   if (!leitorMP3.begin(Serial2)) {
-    Serial.println(F("Erro: DFPlayer não encontrado. Verifique fios e 5V!"));
+    Serial.println(F("Erro: DFPlayer não encontrado."));
   } else {
     leitorMP3.volume(25); 
     Serial.println(F("Som Online"));
