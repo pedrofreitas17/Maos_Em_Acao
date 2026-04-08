@@ -6,7 +6,7 @@
 #include <SPI.h>
 #include <MFRC522.h>
 
-// --- PINOS E CONFIGURAÇÕES ---
+// PINOS E CONFIGURAÇÕES 
 #define SS_PIN 5   
 #define RST_PIN 4  
 #define OLED_RESET -1
@@ -15,7 +15,7 @@
 #define RXD2 16
 #define TXD2 17
 
-// --- OBJETOS ---
+// OBJETOS 
 Adafruit_SSD1306 display(128, 64, &Wire, OLED_RESET);
 RoboEyes eyes(display);
 DFRobotDFPlayerMini leitorMP3;
@@ -68,7 +68,7 @@ void setup() {
   setupOlhos();     
   setupSom();       
   
-  Serial.println(F("--- PROJETO 1: SISTEMA PRONTO ---"));
+  Serial.println(F("PROJETO 1: SISTEMA PRONTO"));
 }
 
 // 4. CICLO PRINCIPAL (MAIN)
@@ -108,11 +108,17 @@ void loop() {
     mudarExpressao(1);
     tocarPasso(4);
   }
+  else if (uidString == "50 45 D0 61") {
+    // Cartão EASTER EGG
+    mudarExpressao(3); 
+    tocarPasso(6);
+  }
   else {
     // Cartão desconhecido
     mudarExpressao(3); 
-    tocarPasso(5); // Som de alerta/erro
+    tocarPasso(5); 
   }
+
 
   rfid.PICC_HaltA();
   rfid.PCD_StopCrypto1();
